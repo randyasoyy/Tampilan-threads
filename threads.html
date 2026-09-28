@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threads</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #101010;
+            color: #f3f5f7;
+            font-size: 14px;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .app-container {
+            width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .sidebar {
+            float: left;
+            width: 240px;
+            padding: 24px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            background-color: #101010;
+        }
+
+        .sidebar__logo {
+            margin-bottom: 24px;
+            padding-left: 16px;
+        }
+
+        .sidebar__logo-img {
+            width: 32px;
+            height: 32px;
+            filter: invert(1);
+            display: block;
+        }
+
+        .sidebar__nav-list {
+            list-style: none;
+        }
+
+        .sidebar__nav-item {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .sidebar__nav-item--active {
+            background-color: #1e1e1e;
+        }
+
+        .main-content {
+            float: right;
+            width: 960px;
+            padding-left: 40px;
+            min-height: 100vh;
+            border-left: 1px solid #262626;
+        }
+
+        .header {
+            padding: 20px 0;
+            border-bottom: 1px solid #262626;
+        }
+
+        .header__logo-img {
+            width: 24px;
+            height: 24px;
+            filter: invert(1);
+            vertical-align: middle;
+            margin-right: 12px;
+        }
+
+        .header__title {
+            font-size: 16px;
+            font-weight: 700;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .feed {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .post {
+            border-bottom: 1px solid #262626;
+            padding: 20px 0;
+        }
+
+        .post__avatar-col {
+            float: left;
+            width: 44px;
+        }
+
+        .post__avatar {
+            width: 36px;
+            height: 36px;
+            background-color: #ff3b30;
+            border-radius: 50%;
+        }
+
+        .post__content-col {
+            float: right;
+            width: calc(100% - 44px);
+        }
+
+        .post__header {
+            margin-bottom: 4px;
+        }
+
+        .post__author {
+            font-weight: 700;
+            color: #f3f5f7;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .post__time {
+            color: #616161;
+            display: inline-block;
+        }
+
+        .post__text {
+            line-height: 1.5;
+            color: #f3f5f7;
+            margin-bottom: 12px;
+        }
+
+        /* --- STYLES GALERI GAMBAR TANPA FLEX --- */
+        .image-gallery {
+            margin-top: 8px;
+            font-size: 0;
+            /* Menghilangkan jarak bawaan spasi antar elemen inline-block */
+        }
+
+        .image-gallery__item {
+            display: inline-block;
+            vertical-align: top;
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-right: 8px;
+        }
+
+        /* --- STYLES KARTU KOMPAS --- */
+        .media-card {
+            border-left: 2px solid #333;
+            padding-left: 12px;
+            margin-top: 12px;
+        }
+
+        .media-card__source {
+            font-size: 11px;
+            color: #2b6cb0;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .media-card__title {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container clearfix">
+        <aside class="sidebar">
+            <div class="sidebar__logo">
+                <img class="sidebar__logo-img"
+                    src="https://upload.wikimedia.org/wikipedia/commons/9/9d/Threads_%28app%29_logo.svg"
+                    alt="Threads Logo">
+            </div>
+
+            <ul class="sidebar__nav-list">
+                <li class="sidebar__nav-item sidebar__nav-item--active">Untuk Anda</li>
+                <li class="sidebar__nav-item">Utas baru</li>
+                <li class="sidebar__nav-item">Cari</li>
+                <li class="sidebar__nav-item">Pesan</li>
+                <li class="sidebar__nav-item">Aktivitas</li>
+                <li class="sidebar__nav-item">Profil</li>
+                <li class="sidebar__nav-item">Insight</li>
+                <br>
+                <li class="sidebar__nav-item">Mengikuti</li>
+                <li class="sidebar__nav-item">Tersimpan</li>
+                <li class="sidebar__nav-item">Disimpan</li>
+                <br>
+                <li class="sidebar__nav-item">Postingan Hantu</li>
+                <li class="sidebar__nav-item">Arsip</li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <img class="header__logo-img">
+                <h1 class="header__title">Untuk Anda</h1>
+            </header>
+
+            <div class="feed">
+
+              
+                <article class="post clearfix">
+                    <div class="post__avatar-col">
+                        <div class="post__avatar"></div>
+                    </div>
+                    <div class="post__content-col">
+                        <div class="post__header">
+                            <span class="post__author">RF Citayam</span>
+                            <span class="post__time">24 jam</span>
+                        </div>
+                        <p class="post__text">TM 6000 yang masih beroperasi 1/4</p>
+                        <div class="image-gallery">
+                            <img class="image-gallery__item" src="krl1.jpg" alt="TM 6000 Image 1"><img
+                                class="image-gallery__item" src="krl2.jpg" alt="TM 6000 Image 2">
+                        </div>
+                    </div>
+                </article>
+
+               
+                <article class="post clearfix">
+                    <div class="post__avatar-col">
+                        <div class="post__avatar"></div>
+                    </div>
+
+                    <div class="post__content-col">
+                        <div class="post__header">
+                            <span class="post__author">txttransportasiumum</span>
+                            <span class="post__time">1jam</span>
+                        </div>
+
+                        <p class="post__text">
+                            Dirut PT Kereta Api Indonesia (Persero), Bobby Rasyidin, mengungkapkan kepada Komisi VI DPR
+                            RI bahwa 9 dari 16 KRL yang dipesan dari PT Industri Kereta Api (Persero) atau INKA belum
+                            diterima hingga September 2026.<br><br>
+                            Sebanyak 9 KRL seharusnya sudah diterima KAI sejak lebih dari satu tahun lalu. Namun,
+                            kondisi saat ini dari 16 yang dipesan baru 7 KRL yang telah diterima dan beroperasi. (cont.)
+                            1/2
+                        </p>
+
+                        <div class="media-card">
+                            <div class="media-card__source">KOMPAS.com</div>
+                            <h2 class="media-card__title">9 KRL Buatan INKA Belum Diterima KAI, Terlambat Lebih dari
+                                Setahun</h2>
+
+                            <div class="image-gallery">
+                                <img class="image-gallery__item" src="cli 225.jpg.jpg" alt="KRL INKA 1"><img
+                                    class="image-gallery__item" src="cli 225.jpg.jpg" alt="KRL INKA 2">
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
